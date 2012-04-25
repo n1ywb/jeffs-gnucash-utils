@@ -65,12 +65,21 @@ class Vendor(object):
     pass
 
 
+class Job(object):
+    @staticmethod
+    def from_gnc_job(gnc_job):
+        job = Job()
+        job.name = gnc_job.GetName()
+        return job
+
+
 class Invoice(object):
     @staticmethod
     def from_gnc_invoice(gnc_inv):
         invoice = Invoice()
         job = gnc_inv.GetOwner()
         customer = job.GetOwner()
+        invoice.job = Job.from_gnc_job(job)
         invoice.number = gnc_inv.GetID()
         invoice.date_opened = gnc_inv.GetDateOpened()
         invoice.date_posted = gnc_inv.GetDatePosted()

@@ -1,4 +1,4 @@
-%<!
+<%!
 # Copyright 2012 by Jeffrey M. Laughlin <jeff.laughlin@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
@@ -22,9 +22,12 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <style type="text/css">
-        body, table {
+        body {
             font-family: sans-serif;
             font-size: 10pt;
+            width: 7in;
+        }
+        .entries-table {
             width: 7in;
         }
 
@@ -53,11 +56,14 @@
 <body>
 
 <div style="float: right;">
-    <div style="font-size: 18pt; font-weight: bold;">INVOICE</div>
-    Invoice #${invoice.number}<br>
-    Date Opened: ${invoice.date_opened}<br>
-    Date Posted: ${invoice.date_posted}<br>
-    Date Due: ${invoice.date_due}
+    <div style="margin-top: 12pt; text-align: right; font-size: 18pt; font-weight: bold;">INVOICE</div>
+    <table>
+    <tr><td>Invoice #</td><td>${invoice.number}</td></tr>
+    <tr><td>Job:</td><td style="width: 10ch;">${invoice.job.name}</td></tr>
+    <tr><td>Date Opened:</td><td>${invoice.date_opened}</td></tr>
+    <tr><td>Date Posted:</td><td>${invoice.date_posted}</td></tr>
+    <tr><td>Date Due:</td><td>${invoice.date_due}</td></tr>
+    </table>
 </div>
 
 <div style="font-size: 24pt;">${invoice.vendor.name}</div>
@@ -70,7 +76,7 @@
 
 
 <div>
-    <span style="text-decoration: underline">Bill To:</span><br>
+    <span style="font-size: 12pt; text-decoration: underline">Bill To:</span><br>
     ${invoice.customer.name}<br>
     Attn: ${invoice.customer.contact}<br>
     ${"<br>".join(invoice.customer.address)}<br>
@@ -78,7 +84,7 @@
     Email: ${invoice.customer.email}
 </div>
 
-<table border="1" cellspacing="0" cellpadding="4">
+<table class="entries-table" border="1" cellspacing="0" cellpadding="4">
 <tr>
 <th>#</th>
 <th>Date</th>
