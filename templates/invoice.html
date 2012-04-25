@@ -1,0 +1,121 @@
+%<!
+# Copyright 2012 by Jeffrey M. Laughlin <jeff.laughlin@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Note: This license applies only to this template file. It does not apply
+# to the rendered output.
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <style type="text/css">
+        body, table {
+            font-family: sans-serif;
+            font-size: 10pt;
+            width: 7in;
+        }
+
+        div, table {
+            margin-bottom: 18pt;
+        }
+
+        a { font-style: italic;  }
+        tr.alternate-row { background: #ffffff }
+        th.column-heading-left { text-align: left; font-family: Ubuntu; font-size: 10pt;  }
+        th.column-heading-center { text-align: center; font-family: Ubuntu; font-size: 10pt;  }
+        th.column-heading-right { text-align: right; font-family: Ubuntu; font-size: 10pt;  }
+        td.neg { color: red;  }
+        td.number-cell, td.total-number-cell { text-align: right; white-space: nowrap; }
+        td.date-cell { white-space: nowrap; }
+        td.anchor-cell { white-space: nowrap; font-family: Ubuntu; font-size: 10pt;  }
+        td.number-cell { font-family: Ubuntu; font-size: 10pt;  }
+        td.number-header { text-align: right; font-family: Ubuntu; font-size: 10pt;  }
+        td.text-cell { font-family: Ubuntu; font-size: 10pt;  }
+        td.total-number-cell {  font-weight: bold;  }
+        td.total-label-cell {  font-weight: bold;  }
+        td.centered-label-cell { text-align: center; font-weight: bold;  }
+    </style>
+    <title>Invoice #000003</title>
+</head>
+<body>
+
+<div style="float: right;">
+    <div style="font-size: 18pt; font-weight: bold;">INVOICE</div>
+    Invoice #${invoice.number}<br>
+    Date Opened: ${invoice.date_opened}<br>
+    Date Posted: ${invoice.date_posted}<br>
+    Date Due: ${invoice.date_due}
+</div>
+
+<div style="font-size: 24pt;">${invoice.vendor.name}</div>
+
+<div class="address">
+   ${"<br>".join(invoice.vendor.address)}
+    <br>Phone: ${invoice.vendor.phone}
+    <br>Email: ${invoice.vendor.email}
+</div>
+
+
+<div>
+    <span style="text-decoration: underline">Bill To:</span><br>
+    ${invoice.customer.name}<br>
+    Attn: ${invoice.customer.contact}<br>
+    ${"<br>".join(invoice.customer.address)}<br>
+    Phone: ${invoice.customer.phone}<br>
+    Email: ${invoice.customer.email}
+</div>
+
+<table border="1" cellspacing="0" cellpadding="4">
+<tr>
+<th>#</th>
+<th>Date</th>
+<th>Description</th>
+<th>Charge Type</th>
+<th>Qty</th>
+<th>Unit Price</th>
+<th>Total</th>
+</tr>
+%for n, entry in enumerate(invoice.entries):
+    <tr>
+        <td>${n+1}</td>
+        <td>${entry.date}</td>
+        <td>${entry.desc}</td>
+        <td>${entry.units}</td>
+        <td class="number-cell">${entry.qty}</td>
+        <td class="number-cell">$${"%.2f" % entry.unit_cost}</td>
+        <td class="number-cell">$${"%.2f" % (entry.qty * entry.unit_cost)}</td>
+    </tr>
+%endfor
+
+<tr>
+    <td class="total-label-cell" rowspan="1" colspan="6" style="text-align: right;">Amount Due</td>
+    <td class="total-number-cell" rowspan="1" colspan="1">$${"%.2f" % sum([entry.qty * entry.unit_cost for entry in invoice.entries])}</td>
+</tr>
+</table>
+
+<div>
+    Comments:<br>
+    <ol>
+        <li>Payment due within 30 days.</li>
+        <li>Please make checks payable to Jeffrey M. Laughlin.</li>
+        <li>Please indicate invoice number on check.</li>
+        <li>For questions, please contact Jeff Laughlin at 858-232-2005 or <span style="text-decoration: underline">jeff.laughlin@gmail.com</span>.</li>
+        <li>Thank you for your business.</li>
+    </ol>
+</div>
+
+</body>
+</html>

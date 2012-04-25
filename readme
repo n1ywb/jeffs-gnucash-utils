@@ -1,0 +1,17 @@
+Jeff's Useful GnuCash Utilities.
+
+Copyright 2012 by Jeffrey M. Laughlin <jeff.laughlin@gmail.com>
+
+Released under the terms of the GNU General Public License v3.
+
+invoice.py
+
+Given one or more invoice IDs, generate printable HTML invoices.
+
+Invoice template is based on HTML/CSS and Mako. It's very easy to customize.
+
+Example: invoice.py file:///home/user/gnucash/mybook.gnucash 000123
+
+Notes:
+* Invoice IDs are passed in as strings. Using GnuCash defaults, you must
+  include the leading zeros.
