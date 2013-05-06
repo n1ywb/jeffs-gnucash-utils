@@ -37,7 +37,7 @@ class Entry(object):
         entry = Entry()
         entry.date=gnc_entry.GetDate()
         entry.desc=gnc_entry.GetDescription()
-        entry.units="Hours"
+        entry.units=gnc_entry.GetAction()
         entry.qty=gnucash.GncNumeric(instance=gnc_entry.GetQuantity()).to_double()
         entry.unit_cost=gnucash.GncNumeric(instance=gnc_entry.GetInvPrice()).to_double()
         return entry
@@ -70,6 +70,7 @@ class Job(object):
     def from_gnc_job(gnc_job):
         job = Job()
         job.name = gnc_job.GetName()
+        job.reference = gnc_job.GetReference()
         return job
 
 

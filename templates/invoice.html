@@ -1,5 +1,5 @@
 <%!
-# Copyright 2012 by Jeffrey M. Laughlin <jeff.laughlin@gmail.com>
+# Copyright 2012 by Jeffrey M. Laughlin <jeff@jefflaughlinconsulting.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@
         td.total-number-cell {  font-weight: bold;  }
         td.total-label-cell {  font-weight: bold;  }
     </style>
-    <title>Invoice #000003</title>
+    <title>Invoice #${invoice.number}</title>
 </head>
 <body>
 
@@ -48,6 +48,7 @@
     <table>
     <tr><td>Invoice #</td><td>${invoice.number}</td></tr>
     <tr><td>Job:</td><td style="width: 10ch;">${invoice.job.name}</td></tr>
+    <tr><td>Reference:</td><td style="width: 10ch;">${invoice.job.reference}</td></tr>
     <tr><td>Date Opened:</td><td>${invoice.date_opened}</td></tr>
     <tr><td>Date Posted:</td><td>${invoice.date_posted}</td></tr>
     <tr><td>Date Due:</td><td>${invoice.date_due}</td></tr>
@@ -104,9 +105,9 @@
     Comments:<br>
     <ol>
         <li>Payment due within 30 days.</li>
-        <li>Please make checks payable to Jeffrey M. Laughlin.</li>
+        <li>Please make checks payable to "Jeff Laughlin Consulting LLC".</li>
         <li>Please indicate invoice number on check.</li>
-        <li>For questions, please contact Jeff Laughlin at 858-232-2005 or <span style="text-decoration: underline">jeff.laughlin@gmail.com</span>.</li>
+        <li>For questions, please contact Jeff Laughlin at 858-232-2005 or <span style="text-decoration: underline">jeff@jefflaughlinconsulting.com</span>.</li>
         <li>Thank you for your business.</li>
     </ol>
 </div>

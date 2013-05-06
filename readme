@@ -15,3 +15,5 @@ Example: invoice.py file:///home/user/gnucash/mybook.gnucash 000123
 Notes:
 * Invoice IDs are passed in as strings. Using GnuCash defaults, you must
   include the leading zeros.
+* Tested on Ubuntu 12.04 with python, python-mako, gnucash and gnucash-python
+  packages.
