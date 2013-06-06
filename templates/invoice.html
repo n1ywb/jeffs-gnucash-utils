@@ -58,9 +58,19 @@
 <div style="font-size: 24pt;">${invoice.vendor.name}</div>
 
 <div class="address">
-   ${"<br>".join(invoice.vendor.address)}
-    <br>Phone: ${invoice.vendor.phone}
-    <br>Email: ${invoice.vendor.email}
+    Contact: ${invoice.vendor.contact}
+    <br>
+    Address:
+    <br>
+    ${"<br>".join(invoice.vendor.address)}
+    <br>
+    Phone: ${invoice.vendor.phone}
+    <br>
+    Email: ${invoice.vendor.email}
+    <br>
+    Web: ${invoice.vendor.website}
+    <br>
+    EIN: ${invoice.vendor.employer_id}
 </div>
 
 

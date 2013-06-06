@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import ctypes
 import logging
 
 from optparse import OptionParser
@@ -29,6 +30,22 @@ from mako import exceptions
 import gnucash
 from gnucash import gnucash_business
 
+
+# gnucash-python doesn't have the functions we need to get the company info
+# from the book. This ugly hack gets the job done.
+libgnc_qof = ctypes.CDLL('/usr/lib/x86_64-linux-gnu/gnucash/libgnc-qof.so')
+libgnc_qof.kvp_value_get_string.restype = ctypes.c_char_p
+libgnc_qof.kvp_frame_get_slot_path.restype = ctypes.c_void_p
+libgnc_qof.qof_book_get_slots.restype = ctypes.c_void_p
+
+class BusinessSlots(object):
+    def __init__(self, book):
+        self._slots = libgnc_qof.qof_book_get_slots(ctypes.c_void_p(book.instance.__long__()))
+    def __getitem__(self, key):
+        kvpv = libgnc_qof.kvp_frame_get_slot_path(
+                        self._slots, 'options', 'Business', key, None)
+        val = libgnc_qof.kvp_value_get_string(kvpv)
+        return val
 
 class Entry(object):
     @staticmethod
@@ -76,7 +93,7 @@ class Job(object):
 
 class Invoice(object):
     @staticmethod
-    def from_gnc_invoice(gnc_inv):
+    def from_gnc_invoice(gnc_inv, slots):
         invoice = Invoice()
         job = gnc_inv.GetOwner()
         customer = job.GetOwner()
@@ -86,12 +103,16 @@ class Invoice(object):
         invoice.date_posted = gnc_inv.GetDatePosted()
         invoice.date_due = gnc_inv.GetDateDue()
         invoice.customer = Customer.from_gnc_customer(customer)
+        # NOTE This should probably be "Company" and not "Vendor"
         vendor = Vendor()
-        vendor.name = "Jeff Laughlin Consulting"
-        vendor.contact = "Jeff Laughlin"
-        vendor.email = "jeff.laughlin@gmail.com"
-        vendor.phone = "858-232-2005"
-        vendor.address = ["8 Edgewood Ave", "Barre, VT 05641"]
+        # NOTE These may need to support internationalization
+        vendor.employer_id = slots['Company ID']
+        vendor.name = slots['Company Name']
+        vendor.contact = slots['Company Contact Person']
+        vendor.email = slots['Company Email Address']
+        vendor.phone = slots['Company Phone Number']
+        vendor.address = slots['Company Address'].split('\n')
+        vendor.website = slots['Company Website URL']
         invoice.vendor = vendor
         invoice.entries = []
         for gnc_entry in gnc_inv.GetEntries():
@@ -119,11 +140,12 @@ def main(argv=None):
     session = gnucash.Session(input_url,ignore_lock=True)
     book = session.book
     root_account = book.get_root_account()
+    slots = BusinessSlots(book)
     #i = book.InvoiceLookupByID("000002")
     out_files = []
     for invoice_id in invoice_ids:
         i = book.InvoiceLookupByID(invoice_id)
-        invoice = Invoice.from_gnc_invoice(i)
+        invoice = Invoice.from_gnc_invoice(i, slots)
         t = Template(filename='templates/invoice.html')
         out_path = 'invoice_%s.html' % invoice_id
         out_files.append(out_path)
