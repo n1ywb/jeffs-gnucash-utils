@@ -61,6 +61,13 @@ class Entry(object):
 
 
 class Customer(object):
+    def __init__(self):
+        self.name = None
+        self.contact = None
+        self.email = None
+        self.phone = None
+        self.addr = []
+
     @staticmethod
     def from_gnc_customer(gnc_customer):
         customer = Customer()
@@ -83,6 +90,10 @@ class Vendor(object):
 
 
 class Job(object):
+    def __init__(self):
+        self.name = None
+        self.reference = None
+
     @staticmethod
     def from_gnc_job(gnc_job):
         job = Job()
@@ -91,18 +102,32 @@ class Job(object):
         return job
 
 
+class UnknownOwnerType(Exception): pass
+
+
 class Invoice(object):
+    def __init__(self):
+        self.job = Job()
+        self.customer = Customer()
+
     @staticmethod
     def from_gnc_invoice(gnc_inv, slots):
         invoice = Invoice()
-        job = gnc_inv.GetOwner()
-        customer = job.GetOwner()
-        invoice.job = Job.from_gnc_job(job)
+        # This returns a `Customer` object when Job is None
+        owner = gnc_inv.GetOwner()
+        if owner is not None:
+            if isinstance(owner, gnucash_business.Customer):
+                invoice.customer = Customer.from_gnc_customer(owner)
+            elif isinstance(owner, gnucash_business.Job):
+                invoice.job = Job.from_gnc_job(owner)
+                customer = owner.GetOwner()
+                invoice.customer = Customer.from_gnc_customer(customer)
+            else:
+                raise UnknownOwnerType(type(owner))
         invoice.number = gnc_inv.GetID()
         invoice.date_opened = gnc_inv.GetDateOpened()
         invoice.date_posted = gnc_inv.GetDatePosted()
         invoice.date_due = gnc_inv.GetDateDue()
-        invoice.customer = Customer.from_gnc_customer(customer)
         # NOTE This should probably be "Company" and not "Vendor"
         vendor = Vendor()
         # NOTE These may need to support internationalization
@@ -111,7 +136,8 @@ class Invoice(object):
         vendor.contact = slots['Company Contact Person']
         vendor.email = slots['Company Email Address']
         vendor.phone = slots['Company Phone Number']
-        vendor.address = slots['Company Address'].split('\n')
+        addr = slots['Company Address']
+        vendor.address = addr.split('\n') if addr is not None else []
         vendor.website = slots['Company Website URL']
         invoice.vendor = vendor
         invoice.entries = []
@@ -145,6 +171,9 @@ def main(argv=None):
     out_files = []
     for invoice_id in invoice_ids:
         i = book.InvoiceLookupByID(invoice_id)
+        if i is None:
+            logging.error("Failed to lookup invoice '%s'" % invoice_id)
+            continue
         invoice = Invoice.from_gnc_invoice(i, slots)
         t = Template(filename='templates/invoice.html')
         out_path = 'invoice_%s.html' % invoice_id
