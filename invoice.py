@@ -30,6 +30,7 @@ from mako import exceptions
 import gnucash
 from gnucash import gnucash_business
 
+log = logging.getLogger(__name__)
 
 # gnucash-python doesn't have the functions we need to get the company info
 # from the book. This ugly hack gets the job done.
@@ -149,6 +150,8 @@ class Invoice(object):
 usage='%(prog)s [options] gnucash_book_url invoice_id_1 [invoice_id_2] ... [invoice_id_x]'
 
 def main(argv=None):
+    logging.basicConfig(level=logging.DEBUG)
+
     if argv is None:
         argv = sys.argv
 
@@ -160,7 +163,7 @@ def main(argv=None):
         input_url, invoice_ids = args[0], args[1:]
     except Exception:
         # print usage
-        logging.critical("Must supply book URL and at least one invoice ID.")
+        log.critical("Must supply book URL and at least one invoice ID.")
         op.print_help()
         return 1
     session = gnucash.Session(input_url,ignore_lock=True)
@@ -172,7 +175,7 @@ def main(argv=None):
     for invoice_id in invoice_ids:
         i = book.InvoiceLookupByID(invoice_id)
         if i is None:
-            logging.error("Failed to lookup invoice '%s'" % invoice_id)
+            log.error("Failed to lookup invoice '%s'" % invoice_id)
             continue
         invoice = Invoice.from_gnc_invoice(i, slots)
         t = Template(filename='templates/invoice.html')
