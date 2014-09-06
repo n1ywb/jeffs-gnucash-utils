@@ -51,13 +51,12 @@ class BusinessSlots(object):
 class Entry(object):
     @staticmethod
     def from_gnc_entry(gnc_entry):
-        gnc_entry = gnucash_business.Entry(instance=gnc_entry)
         entry = Entry()
         entry.date=gnc_entry.GetDate()
         entry.desc=gnc_entry.GetDescription()
         entry.units=gnc_entry.GetAction()
-        entry.qty=gnucash.GncNumeric(instance=gnc_entry.GetQuantity()).to_double()
-        entry.unit_cost=gnucash.GncNumeric(instance=gnc_entry.GetInvPrice()).to_double()
+        entry.qty=gnc_entry.GetQuantity().to_double()
+        entry.unit_cost=gnc_entry.GetInvPrice().to_double()
         return entry
 
 
