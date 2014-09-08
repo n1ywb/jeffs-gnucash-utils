@@ -13,7 +13,10 @@ Invoice template is based on HTML/CSS and Mako. It's very easy to customize.
 Example: invoice.py file:///home/user/gnucash/mybook.gnucash 000123
 
 Notes:
+
 * Invoice IDs are passed in as strings. Using GnuCash defaults, you must
   include the leading zeros.
-* Tested on Ubuntu 12.04 with python, python-mako, gnucash and gnucash-python
-  packages.
+* Tested on Linux Mint 17 with python, python-mako, gnucash 2.6.1, and
+  gnucash-python packages.
+* This branch is no longer compatible with GnuCash 2.4.x.
+
