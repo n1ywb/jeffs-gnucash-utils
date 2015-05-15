@@ -128,6 +128,7 @@ class Invoice(object):
         invoice.date_opened = gnc_inv.GetDateOpened()
         invoice.date_posted = gnc_inv.GetDatePosted()
         invoice.date_due = gnc_inv.GetDateDue()
+        invoice.billing_id = gnc_inv.GetBillingID()
         # NOTE This should probably be "Company" and not "Vendor"
         vendor = Vendor()
         # NOTE These may need to support internationalization
