@@ -93,9 +93,11 @@
 <th>#</th>
 <th>Date</th>
 <th>Description</th>
-<th>Charge Type</th>
+<th>Type</th>
 <th>Qty</th>
 <th>Unit Price</th>
+<th>Subtotal</th>
+<th>Disc</th>
 <th>Total</th>
 </tr>
 %for n, entry in enumerate(invoice.entries):
@@ -106,13 +108,15 @@
         <td>${entry.units}</td>
         <td class="number-cell">${entry.qty}</td>
         <td class="number-cell">$${"%.2f" % entry.unit_cost}</td>
-        <td class="number-cell">$${"%.2f" % (entry.qty * entry.unit_cost)}</td>
+        <td class="number-cell">$${"%.2f" % entry.subtotal}</td>
+        <td class="number-cell">%${entry.discount}</td>
+        <td class="number-cell">$${"%.2f" % entry.total }</td>
     </tr>
 %endfor
 
 <tr>
-    <td class="total-label-cell" rowspan="1" colspan="6" style="text-align: right;">Amount Due</td>
-    <td class="total-number-cell" rowspan="1" colspan="1">$${"%.2f" % sum([entry.qty * entry.unit_cost for entry in invoice.entries])}</td>
+    <td class="total-label-cell" rowspan="1" colspan="8" style="text-align: right;">Amount Due</td>
+    <td class="total-number-cell" rowspan="1" colspan="1">$${"%.2f" % invoice.total}</td>
 </tr>
 </table>
 

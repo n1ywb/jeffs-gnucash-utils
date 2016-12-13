@@ -52,11 +52,16 @@ class Entry(object):
     @staticmethod
     def from_gnc_entry(gnc_entry):
         entry = Entry()
-        entry.date=gnc_entry.GetDate()
-        entry.desc=gnc_entry.GetDescription()
-        entry.units=gnc_entry.GetAction()
-        entry.qty=gnc_entry.GetQuantity().to_double()
-        entry.unit_cost=gnc_entry.GetInvPrice().to_double()
+        entry.date = gnc_entry.GetDate()
+        entry.desc = gnc_entry.GetDescription()
+        entry.units = gnc_entry.GetAction()
+        entry.qty = gnc_entry.GetQuantity().to_double()
+        entry.unit_cost = gnc_entry.GetInvPrice().to_double()
+        entry.discount = int(gnc_entry.GetInvDiscount().to_double())
+        entry.subtotal = entry.qty * entry.unit_cost
+        entry.total = (entry.subtotal * (1 - 1.0 / entry.discount)
+                       if entry.discount else entry.subtotal)
+
         return entry
 
 
@@ -128,6 +133,9 @@ class Invoice(object):
         invoice.date_opened = gnc_inv.GetDateOpened()
         invoice.date_posted = gnc_inv.GetDatePosted()
         invoice.date_due = gnc_inv.GetDateDue()
+        invoice.subtotal = gnc_inv.GetTotalSubtotal().to_double()
+        invoice.total = gnc_inv.GetTotal().to_double()
+        invoice.total_tax = gnc_inv.GetTotalTax().to_double()
         # NOTE This should probably be "Company" and not "Vendor"
         vendor = Vendor()
         # NOTE These may need to support internationalization
