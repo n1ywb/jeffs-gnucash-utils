@@ -136,6 +136,7 @@ class Invoice(object):
         invoice.subtotal = gnc_inv.GetTotalSubtotal().to_double()
         invoice.total = gnc_inv.GetTotal().to_double()
         invoice.total_tax = gnc_inv.GetTotalTax().to_double()
+        invoice.billing_id = gnc_inv.GetBillingID()
         # NOTE This should probably be "Company" and not "Vendor"
         vendor = Vendor()
         # NOTE These may need to support internationalization
