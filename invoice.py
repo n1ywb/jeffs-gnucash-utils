@@ -53,7 +53,7 @@ class Entry(object):
     def from_gnc_entry(gnc_entry):
         entry = Entry()
         entry.date = gnc_entry.GetDate()
-        entry.desc = gnc_entry.GetDescription()
+        entry.desc = unicode(gnc_entry.GetDescription(), 'utf-8')
         entry.units = gnc_entry.GetAction()
         entry.qty = gnc_entry.GetQuantity().to_double()
         entry.unit_cost = gnc_entry.GetInvPrice().to_double()
@@ -192,7 +192,7 @@ def main(argv=None):
         try:
             with open(out_path, 'w') as f:
                 f.write(
-                    t.render(invoice=invoice)
+                    t.render_unicode(invoice=invoice).encode('utf-8')
                 )
         except Exception:
             print exceptions.text_error_template().render()
@@ -203,4 +203,3 @@ def main(argv=None):
 
 if __name__ == '__main__':
     sys.exit(main())
-
